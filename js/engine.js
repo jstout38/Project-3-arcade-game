@@ -216,9 +216,9 @@ var Engine = (function(global) {
             }
         }
 
-        ctx.drawImage(Resources.get('images/stone-block.png'), exitPosition * 101, 0)
+        ctx.drawImage(Resources.get('images/stone-block.png'), level.exitPosition * 101, 0)
         for (row = 1; row < numRows; row++) {
-            ctx.drawImage(Resources.get(rowImages[row]), exitPosition * 101, row * 83);
+            ctx.drawImage(Resources.get(rowImages[row]), level.exitPosition * 101, row * 83);
         }
 
         ctx.font = "24px Arial";
