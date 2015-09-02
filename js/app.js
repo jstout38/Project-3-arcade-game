@@ -145,26 +145,36 @@ Player.prototype.collisionCheck = function() {
 // Input handling. TODO: Switch to case?
 Player.prototype.handleInput = function(keyCode) {
     if (game.gameHasStarted) {
-    // Main game controls. Check bounds in each direction while also considering the exit position. Q also will reset the game. Enter resets the game at the game over screen.
-        if (keyCode === 'left' && this.x > 0) {
-            this.x = this.x - 101;
-        }
-        else if (keyCode === 'up' && this.y > 0) {
-            if (this.y > 83 || this.x  === level.exitPosition * 101) {
-                this.y = this.y - 83;
+    // Main game controls. Check bounds in each direction while also considering the exit position. Q also will bring up the reset menu. Enter resets the game at the game over screen.
+        if (!game.resetGame) {
+            if (keyCode === 'left' && this.x > 0) {
+                this.x = this.x - 101;
+            }
+            else if (keyCode === 'up' && this.y > 0) {
+                if (this.y > 83 || this.x  === level.exitPosition * 101) {
+                    this.y = this.y - 83;
+                }
+            }
+            else if (keyCode === 'right' && this.x < 404) {
+                this.x = this.x + 101;
+            }
+            else if (keyCode === 'down' && this.y < 405) {
+                this.y = this.y + 83;
+            }
+            else if (keyCode === 'q' && !(game.gameOver)) {
+                game.resetGame = true;
+            }
+            else if (keyCode === 'enter' && game.gameOver) {
+                game = new Game;
             }
         }
-        else if (keyCode === 'right' && this.x < 404) {
-            this.x = this.x + 101;
-        }
-        else if (keyCode === 'down' && this.y < 405) {
-            this.y = this.y + 83;
-        }
-        else if (keyCode === 'q' && !(game.gameOver)) {
-            game.resetGame = true;
-        }
-        else if (keyCode === 'enter' && game.gameOver) {
-            game = new Game;
+        else {
+            if (keyCode === 'y' && game.resetGame) {
+                game = new Game;
+            }
+            else if (keyCode === 'n' && game.resetGame) {
+                game.resetGame = false;
+            }
         }
     }
     else {
@@ -218,7 +228,9 @@ document.addEventListener('keyup', function(e) {
         38: 'up',
         39: 'right',
         40: 'down',
-        81: 'q'
+        78: 'n',
+        81: 'q',
+        89: 'y'
     };
 
 

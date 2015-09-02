@@ -1,6 +1,5 @@
-//TODO: Improve the game over screen
-//TODO: Improve the reset screen
 //TODO: Clean up redundant screen building code
+//TODO: Improve the score/lives display
 
 /* Engine.js
  * This file provides the game loop functionality (update entities and render),
@@ -58,8 +57,13 @@ var Engine = (function(global) {
                 gameOverScreen();
             }
             else {
-                update(dt);
-                render();
+                if (game.resetGame) {
+                    resetGame();
+                }
+                else {
+                    update(dt);
+                    render();
+                }
             }
         }
         else {
@@ -74,10 +78,6 @@ var Engine = (function(global) {
         /* Use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
          */
-        if (game.resetGame) {
-        // If the game has been reset, starts a new game
-            game = new Game;
-        }
 
         // Requests the next frame, continuing the game loop
         win.requestAnimationFrame(main);
@@ -96,15 +96,39 @@ var Engine = (function(global) {
 
     function gameOverScreen() {
     //Displays the game over screen
-        ctx.font = "96px Arial";
+
         ctx.beginPath();
         ctx.rect(100, 160, 300, 220);
         ctx.fillStyle = 'white';
         ctx.fill();
+        ctx.rect(100, 420, 300, 110);
+        ctx.fill();
         ctx.fillStyle = 'black';
+        ctx.rect(105, 165, 290, 210);
+        ctx.stroke();
+        ctx.rect(105, 425, 290, 100);
+        ctx.stroke();
+        ctx.font = "96px Arial";
         ctx.fillText("GAME", 110, 250);
         ctx.fillText("OVER", 110, 350);
+        ctx.font = "36px Arial";
+        ctx.fillText("Press Enter", 155, 460);
+        ctx.fillText("To Try Again", 150, 510);
+    }
 
+    function resetGame() {
+    //Displays the reset screen
+
+        ctx.beginPath();
+        ctx.rect(100, 210, 300, 220);
+        ctx.fillStyle = 'white';
+        ctx.fill();
+        ctx.fillStyle = 'black';
+        ctx.rect(105, 215, 290, 210);
+        ctx.stroke();
+        ctx.font = "42px Arial";
+        ctx.fillText("Are you sure?", 120, 300);
+        ctx.fillText("Y/N?", 200, 370);
     }
 
     function menu() {
