@@ -1,3 +1,7 @@
+//TODO: Improve the game over screen
+//TODO: Improve the reset screen
+//TODO: Clean up redundant screen building code
+
 /* Engine.js
  * This file provides the game loop functionality (update entities and render),
  * draws the initial game board on the screen, and then calls the update and
@@ -30,11 +34,6 @@ var Engine = (function(global) {
     canvas.height = 606;
     doc.body.appendChild(canvas);
 
-
-
-
-
-
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
      */
@@ -52,9 +51,10 @@ var Engine = (function(global) {
          * our update function since it may be used for smooth animation.
          */
 
-
         if (game.gameHasStarted) {
+        // Checks to see if the game has started yet
             if (game.gameOver) {
+            // Runs the game over screen if the game is over
                 gameOverScreen();
             }
             else {
@@ -63,6 +63,7 @@ var Engine = (function(global) {
             }
         }
         else {
+        // If the game hasn't started yet, runs the menu screen
             menu();
         }
         /* Set our lastTime variable which is used to determine the time delta
@@ -74,9 +75,11 @@ var Engine = (function(global) {
          * function again as soon as the browser is able to draw another frame.
          */
         if (game.resetGame) {
+        // If the game has been reset, starts a new game
             game = new Game;
         }
 
+        // Requests the next frame, continuing the game loop
         win.requestAnimationFrame(main);
 
     };
@@ -85,11 +88,14 @@ var Engine = (function(global) {
      * particularly setting the lastTime variable that is required for the
      * game loop.
      */
-     function resetScreen() {
-        // noop
-    };
+
+    function init() {
+        lastTime = Date.now();
+        main();
+    }
 
     function gameOverScreen() {
+    //Displays the game over screen
         ctx.font = "96px Arial";
         ctx.beginPath();
         ctx.rect(100, 160, 300, 220);
@@ -102,6 +108,7 @@ var Engine = (function(global) {
     }
 
     function menu() {
+    //Displays the menu as long as the game has not started
         var rowImages = [
                 'images/water-block.png',   // Top row is water
                 'images/stone-block.png',   // Row 1 of 3 of stone
@@ -114,10 +121,6 @@ var Engine = (function(global) {
             numCols = 5,
             row, col;
 
-        /* Loop through the number of rows and columns we've defined above
-         * and, using the rowImages array, draw the correct image for that
-         * portion of the "grid"
-         */
         for (row = 0; row < numRows; row++) {
             for (col = 0; col < numCols; col++) {
                 /* The drawImage function of the canvas' context element
@@ -131,19 +134,18 @@ var Engine = (function(global) {
             }
         }
 
+        // Draw the cursor
         game.renderCursor();
 
-   for (var i = 0; i<game.characters.length; i++) {
-        ctx.drawImage(Resources.get(game.characters[i]), i * 101, 405);
-   }
+        // Draw the five character options
+        for (var i = 0; i<game.characters.length; i++) {
+            ctx.drawImage(Resources.get(game.characters[i]), i * 101, 405);
+        }
 
    }
 
 
-    function init() {
-        lastTime = Date.now();
-        main();
-    }
+
 
     /* This function is called by main (our game loop) and itself calls all
      * of the functions which may need to update entity's data. Based on how
@@ -156,11 +158,12 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
+        // Clean up enemies that have already passed
         removeEnemies();
+        // Add more enemies if the array is getting too small
         if (allEnemies.length < 25) {
             addEnemies();
         };
-        // checkCollisions();
     }
 
     /* This is called by the update function  and loops through all of the
@@ -216,16 +219,21 @@ var Engine = (function(global) {
             }
         }
 
+        //Draw the exit block
         ctx.drawImage(Resources.get('images/stone-block.png'), level.exitPosition * 101, 0)
+
+        //Because of the overlapping nature of the images, we redraw the tiles under the exit block
         for (row = 1; row < numRows; row++) {
             ctx.drawImage(Resources.get(rowImages[row]), level.exitPosition * 101, row * 83);
         }
 
+        //Display the score and the number of remaining lives
         ctx.font = "24px Arial";
         ctx.fillText("Score: " + game.score, 5, 75);
         ctx.fillText("Lives: " + game.lives, 413, 75);
 
 
+        //Draw the enemies, player, and other objects
         renderEntities();
     }
 
@@ -244,12 +252,6 @@ var Engine = (function(global) {
         player.render();
         heart.render();
     }
-
-    /* This function does nothing but it could have been a good place to
-     * handle game reset states - maybe a new game menu or a game over screen
-     * those sorts of things. It's only called once by the init() method.
-     */
-
 
 
 
