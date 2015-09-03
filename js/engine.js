@@ -1,4 +1,3 @@
-//TODO: Clean up redundant screen building code
 //TODO: Improve the score/lives display
 
 /* Engine.js
@@ -133,30 +132,8 @@ var Engine = (function(global) {
 
     function menu() {
     //Displays the menu as long as the game has not started
-        var rowImages = [
-                'images/water-block.png',   // Top row is water
-                'images/stone-block.png',   // Row 1 of 3 of stone
-                'images/stone-block.png',   // Row 2 of 3 of stone
-                'images/stone-block.png',   // Row 3 of 3 of stone
-                'images/grass-block.png',   // Row 1 of 2 of grass
-                'images/grass-block.png'    // Row 2 of 2 of grass
-            ],
-            numRows = 6,
-            numCols = 5,
-            row, col;
 
-        for (row = 0; row < numRows; row++) {
-            for (col = 0; col < numCols; col++) {
-                /* The drawImage function of the canvas' context element
-                 * requires 3 parameters: the image to draw, the x coordinate
-                 * to start drawing and the y coordinate to start drawing.
-                 * We're using our Resources helpers to refer to our images
-                 * so that we get the benefits of caching these images, since
-                 * we're using them over and over.
-                 */
-                ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
-            }
-        }
+        renderBackground();
 
         // Draw the cursor
         game.renderCursor();
@@ -204,13 +181,8 @@ var Engine = (function(global) {
         player.update();
     }
 
-    /* This function initially draws the "game level", it will then call
-     * the renderEntities function. Remember, this function is called every
-     * game tick (or loop of the game engine) because that's how games work -
-     * they are flipbooks creating the illusion of animation but in reality
-     * they are just drawing the entire screen over and over.
-     */
-    function render() {
+    function renderBackground() {
+
         /* This array holds the relative URL to the image used
          * for that particular row of the game level.
          */
@@ -243,16 +215,30 @@ var Engine = (function(global) {
             }
         }
 
-        //Draw the exit block
-        ctx.drawImage(Resources.get('images/stone-block.png'), level.exitPosition * 101, 0)
+        if (game.gameHasStarted) {
+            //Draw the exit block
+            ctx.drawImage(Resources.get('images/stone-block.png'), level.exitPosition * 101, 0)
 
-        //Because of the overlapping nature of the images, we redraw the tiles under the exit block
-        for (row = 1; row < numRows; row++) {
-            ctx.drawImage(Resources.get(rowImages[row]), level.exitPosition * 101, row * 83);
+            //Because of the overlapping nature of the images, we redraw the tiles under the exit block
+            for (row = 1; row < numRows; row++) {
+                ctx.drawImage(Resources.get(rowImages[row]), level.exitPosition * 101, row * 83);
+            }
         }
 
+    }
+
+    /* This function initially draws the "game level", it will then call
+     * the renderEntities function. Remember, this function is called every
+     * game tick (or loop of the game engine) because that's how games work -
+     * they are flipbooks creating the illusion of animation but in reality
+     * they are just drawing the entire screen over and over.
+     */
+    function render() {
+
+        renderBackground();
+
         //Display the score and the number of remaining lives
-        ctx.font = "24px Arial";
+        ctx.font = "20px Arial";
         ctx.fillText("Score: " + game.score, 5, 75);
         ctx.fillText("Lives: " + game.lives, 413, 75);
 
