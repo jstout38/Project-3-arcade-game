@@ -1,6 +1,5 @@
 //TODO: Clean up code syntax
 //TODO: Stars? Different scoring?
-//TODO: Wider screen? More variables to allow easier adjusting of screen?
 //TODO: Gussy up the html/css
 
 //////////////////////////
@@ -23,7 +22,7 @@ var Game = function() {
 
 Game.prototype.renderCursor = function() {
     //Renders the selector during the intial menu screen
-    ctx.drawImage(Resources.get("images/Selector.png"), game.cursorPosition * 101, 405);
+    ctx.drawImage(Resources.get("images/Selector.png"), game.cursorPosition * 202, 405);
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -32,7 +31,7 @@ Game.prototype.renderCursor = function() {
 
 var Level = function () {
     //Set a random value 0-4 for which column will have the exit
-    this.exitPosition = Math.floor(Math.random() * 5);
+    this.exitPosition = Math.floor(Math.random() * 7) + 1;
 };
 
 ///////////////////////////////////
@@ -45,7 +44,7 @@ var Enemy = function(row, start) {
     this.sprite = 'images/enemy-bug.png';
     this.x = start;
     this.y = row * 83 - 20;
-    this.speed = Math.random() + .5;
+    this.speed = Math.random() + 0.5;
 };
 
 // Update the enemy's position, required method for game
@@ -69,10 +68,10 @@ var Heart = function() {
     // Having an extra heart available on every level would be over kill, so each level has a 20% chance of actually using the heart object.
     // The show variable is what determines whether the heart is actually available to the player.
     this.sprite = "images/Heart.png";
-    this.x = Math.floor(Math.random()*5) * 101;
+    this.x = Math.floor(Math.random()*7 + 1) * 101;
     this.y = (Math.floor(Math.random()*3) + 1) * 83;
     this.show = true;
-    if (Math.random() < .8) {
+    if (Math.random() < 0.8) {
         this.show = false;
     }
 };
@@ -91,7 +90,7 @@ Heart.prototype.heartCollisionCheck = function() {
         if (!(player.x > this.x + 85 || player.x +101 < this.x + 16 ||
                  player.y + 73 > this.y + 140 || player.y +143 < this.y + 60)) {
             return true;
-        };
+        }
     }
     return false;
 };
@@ -113,9 +112,9 @@ Player.prototype.update = function() {
         //Player has reached the top of the screen. Reset the player, increase the score, create a new level, create a new heart.
         player = new Player();
         game.score++;
-        level = new Level;
-        heart = new Heart;
-    };
+        level = new Level();
+        heart = new Heart();
+    }
     if (this.collisionCheck()) {
         //Player has collided with an enemy, Reset the player, subtract a life, check to see if the game is over (0 lives).
         player = new Player();
@@ -123,7 +122,7 @@ Player.prototype.update = function() {
         if (game.lives < 1) {
             game.gameOver = true;
         }
-    };
+    }
     if (heart.heartCollisionCheck()) {
         //Player has collided with a heart. Remove the heart and add a life.
         heart.show = false;
@@ -133,12 +132,12 @@ Player.prototype.update = function() {
 
 // Check for collision with enemy
 Player.prototype.collisionCheck = function() {
-    for (i = 0; i < allEnemies.length; i++) {
+    for (var i = 0; i < allEnemies.length; i++) {
         if (!(allEnemies[i].x > this.x + 85 || allEnemies[i].x +101 < this.x + 16 ||
                  allEnemies[i].y + 73 > this.y + 140 || allEnemies[i].y +143 < this.y + 60)) {
             return true;
-        };
-    };
+        }
+    }
     return false;
 };
 
@@ -155,7 +154,7 @@ Player.prototype.handleInput = function(keyCode) {
                     this.y = this.y - 83;
                 }
             }
-            else if (keyCode === 'right' && this.x < 404) {
+            else if (keyCode === 'right' && this.x < 808) {
                 this.x = this.x + 101;
             }
             else if (keyCode === 'down' && this.y < 405) {
@@ -189,7 +188,7 @@ Player.prototype.handleInput = function(keyCode) {
             // Start the game and create a new player with the selected sprite upon pressing Enter
             game.gameHasStarted = true;
             player = new Player;
-        };
+        }
     }
 };
 
@@ -204,18 +203,18 @@ var allEnemies = [];
 // Add 50 enemies to the array
 function addEnemies() {
     //Picks a random row for each enemy and places them at an interval of 150 pixels. Each new enemy object wil also have a random speed as determined within the enemy constructor.
-    for (i = 0; i < 50; i++) {
-            randRow = Math.floor(Math.random()*3 + 1);
+    for (var i = 0; i < 50; i++) {
+            var randRow = Math.floor(Math.random()*3 + 1);
             allEnemies.push(new Enemy(randRow,i * -150));
-    };
+    }
 }
 
 //Remove enemies that have finished passing through the screen to keep the array's size manageable
 function removeEnemies() {
-    for (i = 0; i < allEnemies.length; i++) {
+    for (var i = 0; i < allEnemies.length; i++) {
         if (allEnemies[i].x > 1000) {
             allEnemies.splice(i,1);
-        };
+        }
     }
 }
 
@@ -238,8 +237,8 @@ document.addEventListener('keyup', function(e) {
 });
 
 // Initialize the objects
-var game = new Game;
-var player = new Player;
-var heart = new Heart;
-var level = new Level;
+var game = new Game();
+var player = new Player();
+var heart = new Heart();
+var level = new Level();
 

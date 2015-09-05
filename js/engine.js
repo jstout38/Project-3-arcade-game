@@ -1,4 +1,3 @@
-//TODO: Improve the score/lives display
 
 /* Engine.js
  * This file provides the game loop functionality (update entities and render),
@@ -28,7 +27,7 @@ var Engine = (function(global) {
         ctx = canvas.getContext('2d'),
         lastTime;
 
-    canvas.width = 505;
+    canvas.width = 909;
     canvas.height = 606;
     doc.body.appendChild(canvas);
 
@@ -140,7 +139,7 @@ var Engine = (function(global) {
 
         // Draw the five character options
         for (var i = 0; i<game.characters.length; i++) {
-            ctx.drawImage(Resources.get(game.characters[i]), i * 101, 405);
+            ctx.drawImage(Resources.get(game.characters[i]), i * 202, 405);
         }
 
    }
@@ -195,7 +194,7 @@ var Engine = (function(global) {
                 'images/grass-block.png'    // Row 2 of 2 of grass
             ],
             numRows = 6,
-            numCols = 5,
+            numCols = 9,
             row, col;
 
         /* Loop through the number of rows and columns we've defined above
@@ -240,7 +239,7 @@ var Engine = (function(global) {
         //Display the score and the number of remaining lives
         ctx.font = "20px Arial";
         ctx.fillText("Score: " + game.score, 5, 75);
-        ctx.fillText("Lives: " + game.lives, 413, 75);
+        ctx.fillText("Lives: " + game.lives, 817, 75);
 
 
         //Draw the enemies, player, and other objects
