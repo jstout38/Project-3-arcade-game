@@ -1,6 +1,5 @@
 //TODO: Clean up code syntax
-//TODO: Stars? Different scoring?
-//TODO: Gussy up the html/css
+//TODO: Add level, heart and star to game object
 
 //////////////////////////
 // The main game object //
@@ -32,6 +31,13 @@ Game.prototype.renderCursor = function() {
 var Level = function () {
     //Set a random value 0-4 for which column will have the exit
     this.exitPosition = Math.floor(Math.random() * 7) + 1;
+    this.heart = new Heart;
+    randomPosition(this.heart);
+    this.star = new Star;
+    randomPosition(this.star);
+    while (this.heart.x === this.star.x && this.heart.y === this.star.y) {
+        randomPosition(this.star);
+    }
 };
 
 ///////////////////////////////////
@@ -63,30 +69,39 @@ Enemy.prototype.render = function() {
 // Heart objects that can be collected by the player for extra lives //
 ///////////////////////////////////////////////////////////////////////
 
-var Heart = function() {
+// var Heart = function() {
+//     // Initiatilizes a heart using the image in sprite at a random x and y position that conforms to the game grid.
+//     // Having an extra heart available on every level would be over kill, so each level has a 20% chance of actually using the heart object.
+//     // The show variable is what determines whether the heart is actually available to the player.
+//     this.sprite = "images/Heart.png";
+//     this.x = Math.floor(Math.random()*7 + 1) * 101;
+//     this.y = (Math.floor(Math.random()*3) + 1) * 83;
+//     this.show = true;
+//     if (Math.random() < 0.8) {
+//         this.show = false;
+//     }
+// };
+
+var Item = function() {
     // Initiatilizes a heart using the image in sprite at a random x and y position that conforms to the game grid.
     // Having an extra heart available on every level would be over kill, so each level has a 20% chance of actually using the heart object.
     // The show variable is what determines whether the heart is actually available to the player.
-    this.sprite = "images/Heart.png";
-    this.x = Math.floor(Math.random()*7 + 1) * 101;
-    this.y = (Math.floor(Math.random()*3) + 1) * 83;
+    this.x;
+    this.y;
     this.show = true;
-    if (Math.random() < 0.8) {
-        this.show = false;
-    }
 };
 
-Heart.prototype.render = function() {
+Item.prototype.render = function() {
     // Renders the heart but only if it is supposed to show for this level
-    if (heart.show) {
+    if (this.show) {
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     }
 };
 
-Heart.prototype.heartCollisionCheck = function() {
+Item.prototype.itemCollisionCheck = function() {
     //Checks if the player collides with the heart.
     //TODO: Streamline with the other collision check function.
-    if (heart.show) {
+    if (this.show) {
         if (!(player.x > this.x + 85 || player.x +101 < this.x + 16 ||
                  player.y + 73 > this.y + 140 || player.y +143 < this.y + 60)) {
             return true;
@@ -94,6 +109,30 @@ Heart.prototype.heartCollisionCheck = function() {
     }
     return false;
 };
+
+function randomPosition(item) {
+    item.x = (Math.floor(Math.random()*7) + 1) * 101;
+    item.y = (Math.floor(Math.random()*3) + 1) * 83 - 10;
+}
+
+var Heart = function() {
+    this.sprite = "images/Heart.png";
+    if (Math.random() < 0.8) {
+        this.show = false;
+    }
+};
+
+Heart.prototype = new Item();
+Heart.prototype.constructor = Heart;
+
+
+var Star = function() {
+    this.sprite = "images/Star.png";
+};
+
+Star.prototype = new Item();
+Star.prototype.constructor = Star;
+
 
 //////////////////////////////
 // The main player function //
@@ -111,9 +150,8 @@ Player.prototype.update = function() {
     if (this.y === -10) {
         //Player has reached the top of the screen. Reset the player, increase the score, create a new level, create a new heart.
         player = new Player();
-        game.score++;
+        game.score += 10;
         level = new Level();
-        heart = new Heart();
     }
     if (this.collisionCheck()) {
         //Player has collided with an enemy, Reset the player, subtract a life, check to see if the game is over (0 lives).
@@ -123,10 +161,14 @@ Player.prototype.update = function() {
             game.gameOver = true;
         }
     }
-    if (heart.heartCollisionCheck()) {
+    if (level.heart.itemCollisionCheck()) {
         //Player has collided with a heart. Remove the heart and add a life.
-        heart.show = false;
+        level.heart.show = false;
         game.lives++;
+    }
+    if (level.star.itemCollisionCheck()) {
+        level.star.show = false;
+        game.score += 5;
     }
 };
 
@@ -239,6 +281,5 @@ document.addEventListener('keyup', function(e) {
 // Initialize the objects
 var game = new Game();
 var player = new Player();
-var heart = new Heart();
 var level = new Level();
 

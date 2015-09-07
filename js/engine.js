@@ -29,7 +29,7 @@ var Engine = (function(global) {
 
     canvas.width = 909;
     canvas.height = 606;
-    doc.body.appendChild(canvas);
+    $("#gameContainer").append(canvas);
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
@@ -95,38 +95,33 @@ var Engine = (function(global) {
     function gameOverScreen() {
     //Displays the game over screen
 
-        ctx.beginPath();
-        ctx.rect(100, 160, 300, 220);
-        ctx.fillStyle = 'white';
-        ctx.fill();
-        ctx.rect(100, 420, 300, 110);
-        ctx.fill();
-        ctx.fillStyle = 'black';
-        ctx.rect(105, 165, 290, 210);
-        ctx.stroke();
-        ctx.rect(105, 425, 290, 100);
-        ctx.stroke();
+        textBox(305, 160, 300, 220);
+        textBox(305, 420, 300, 110);
         ctx.font = "96px Arial";
-        ctx.fillText("GAME", 110, 250);
-        ctx.fillText("OVER", 110, 350);
+        ctx.fillText("GAME", 315, 250);
+        ctx.fillText("OVER", 315, 350);
         ctx.font = "36px Arial";
-        ctx.fillText("Press Enter", 155, 460);
-        ctx.fillText("To Try Again", 150, 510);
+        ctx.fillText("Press Enter", 360, 460);
+        ctx.fillText("To Try Again", 355, 510);
     }
 
     function resetGame() {
     //Displays the reset screen
 
+        textBox(305, 210, 300, 220);
+        ctx.font = "42px Arial";
+        ctx.fillText("Are you sure?", 325, 300);
+        ctx.fillText("Y/N?", 405, 370);
+    }
+
+    function textBox(x, y, w, h) {
         ctx.beginPath();
-        ctx.rect(100, 210, 300, 220);
+        ctx.rect(x, y, w, h);
         ctx.fillStyle = 'white';
         ctx.fill();
+        ctx.rect(x + 5, y + 5, w - 10, h - 10);
         ctx.fillStyle = 'black';
-        ctx.rect(105, 215, 290, 210);
         ctx.stroke();
-        ctx.font = "42px Arial";
-        ctx.fillText("Are you sure?", 120, 300);
-        ctx.fillText("Y/N?", 200, 370);
     }
 
     function menu() {
@@ -141,6 +136,8 @@ var Engine = (function(global) {
         for (var i = 0; i<game.characters.length; i++) {
             ctx.drawImage(Resources.get(game.characters[i]), i * 202, 405);
         }
+
+        ctx.drawImage(Resources.get('images/logo.png'), 85, 175);
 
    }
 
@@ -259,7 +256,8 @@ var Engine = (function(global) {
         });
 
         player.render();
-        heart.render();
+        level.heart.render();
+        level.star.render();
     }
 
 
@@ -279,7 +277,9 @@ var Engine = (function(global) {
         'images/char-pink-girl.png',
         'images/char-princess-girl.png',
         'images/Selector.png',
-        'images/Heart.png'
+        'images/Heart.png',
+        'images/Star.png',
+        'images/logo.png'
     ]);
     Resources.onReady(init);
 
