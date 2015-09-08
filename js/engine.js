@@ -29,7 +29,8 @@ var Engine = (function(global) {
 
     canvas.width = 909;
     canvas.height = 606;
-    $("#gameContainer").append(canvas);
+    // Add the canvas to the gameContainer div of the page.
+    $('#gameContainer').append(canvas);
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
@@ -80,7 +81,7 @@ var Engine = (function(global) {
         // Requests the next frame, continuing the game loop
         win.requestAnimationFrame(main);
 
-    };
+    }
 
     /* This function does some initial setup that should only occur once,
      * particularly setting the lastTime variable that is required for the
@@ -93,28 +94,29 @@ var Engine = (function(global) {
     }
 
     function gameOverScreen() {
-    //Displays the game over screen
+    // Displays the game over screen
 
         textBox(305, 160, 300, 220);
         textBox(305, 420, 300, 110);
-        ctx.font = "96px Arial";
-        ctx.fillText("GAME", 315, 250);
-        ctx.fillText("OVER", 315, 350);
-        ctx.font = "36px Arial";
-        ctx.fillText("Press Enter", 360, 460);
-        ctx.fillText("To Try Again", 355, 510);
+        ctx.font = '96px Arial';
+        ctx.fillText('GAME', 315, 250);
+        ctx.fillText('OVER', 315, 350);
+        ctx.font = '36px Arial';
+        ctx.fillText('Press Enter', 360, 460);
+        ctx.fillText('To Try Again', 355, 510);
     }
 
     function resetGame() {
-    //Displays the reset screen
+    // Displays the reset screen
 
         textBox(305, 210, 300, 220);
-        ctx.font = "42px Arial";
-        ctx.fillText("Are you sure?", 325, 300);
-        ctx.fillText("Y/N?", 405, 370);
+        ctx.font = '42px Arial';
+        ctx.fillText('Are you sure?', 325, 300);
+        ctx.fillText('Y/N?', 405, 370);
     }
 
     function textBox(x, y, w, h) {
+    // A helper function for drawing text boxes on the screen
         ctx.beginPath();
         ctx.rect(x, y, w, h);
         ctx.fillStyle = 'white';
@@ -125,8 +127,9 @@ var Engine = (function(global) {
     }
 
     function menu() {
-    //Displays the menu as long as the game has not started
+    // Displays the menu as long as the game has not started
 
+        // Draw the backgrond
         renderBackground();
 
         // Draw the cursor
@@ -137,12 +140,9 @@ var Engine = (function(global) {
             ctx.drawImage(Resources.get(game.characters[i]), i * 202, 405);
         }
 
+        // Draw the game logo
         ctx.drawImage(Resources.get('images/logo.png'), 85, 175);
-
-   }
-
-
-
+    }
 
     /* This function is called by main (our game loop) and itself calls all
      * of the functions which may need to update entity's data. Based on how
@@ -171,9 +171,11 @@ var Engine = (function(global) {
      * render methods.
      */
     function updateEntities(dt) {
+        // Update enemies
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
+        // Update player
         player.update();
     }
 
@@ -212,12 +214,12 @@ var Engine = (function(global) {
         }
 
         if (game.gameHasStarted) {
-            //Draw the exit block
-            ctx.drawImage(Resources.get('images/stone-block.png'), level.exitPosition * 101, 0)
+            // Draw the exit block
+            ctx.drawImage(Resources.get('images/stone-block.png'), game.level.exitPosition * 101, 0)
 
-            //Because of the overlapping nature of the images, we redraw the tiles under the exit block
+            // Because of the overlapping nature of the images, we redraw the tiles under the exit block
             for (row = 1; row < numRows; row++) {
-                ctx.drawImage(Resources.get(rowImages[row]), level.exitPosition * 101, row * 83);
+                ctx.drawImage(Resources.get(rowImages[row]), game.level.exitPosition * 101, row * 83);
             }
         }
 
@@ -233,13 +235,13 @@ var Engine = (function(global) {
 
         renderBackground();
 
-        //Display the score and the number of remaining lives
-        ctx.font = "20px Arial";
-        ctx.fillText("Score: " + game.score, 5, 75);
-        ctx.fillText("Lives: " + game.lives, 817, 75);
+        // Display the score and the number of remaining lives
+        ctx.font = '20px Arial';
+        ctx.fillText('Score: ' + game.score, 5, 75);
+        ctx.fillText('Lives: ' + game.lives, 817, 75);
 
 
-        //Draw the enemies, player, and other objects
+        // Draw the enemies, player, and other objects
         renderEntities();
     }
 
@@ -255,9 +257,10 @@ var Engine = (function(global) {
             enemy.render();
         });
 
+        // Draw the player and any hearts and stars
         player.render();
-        level.heart.render();
-        level.star.render();
+        game.level.heart.render();
+        game.level.star.render();
     }
 
 
