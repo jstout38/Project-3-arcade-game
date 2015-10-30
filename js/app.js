@@ -29,7 +29,7 @@ Game.prototype.renderCursor = function() {
 var Level = function () {
     // Set a random value 0-4 for which column will have the exit (ignores the first and last column)
     this.exitPosition = Math.floor(Math.random() * 7) + 1;
-    this.heart = new Heart;
+    this.heart = new Heart();
     randomPosition(this.heart);
     this.star = new Star;
     randomPosition(this.star);
